@@ -8,7 +8,7 @@
 	Credits:
 	* BlueG - MySQL
 
-	Version: 3.0
+	Version: 3.1
 
 	(c) Copyright 2016
  	* This file is provided as is (no warranties).
@@ -19,18 +19,18 @@
 	native SQL::DeleteRow3(connectionHandle = 1, const table[], const column[] = "", type = 'i', {Float,_}:...);
 	native SQL::DeleteRowEx(const table[], const column[] = "", const columnID[] = "", limit = -1, limit2 = -1, connectionHandle = 1);
 	native SQL::DeleteRowEx2(const table[], const column[] = "", const columnID[] = "", const column2[] = "", const columnID2[] = "", columnID3 = -1, limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetIntEntry(const table[], const field[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetIntEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1);
-	native Float:SQL::GetFloatEntry(const table[], const field[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1);
-	native Float:SQL::GetFloatEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", limit = -1, limit2 = -1, connectionHandle = 1);
-	native SQL::GetIntEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, limit = -1, limit2 = -1, connectionHandle = 1);
-	native Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", limit = -1, limit2 = -1, connectionHandle = 1);
-	native Float:SQL::GetFloatEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, limit = -1, limit2 = -1, connectionHandle = 1);
+	native SQL::GetIntEntry(const table[], const field[], const column[] = "", columnID = -1, const columno[] = "=", connectionHandle = 1);
+	native SQL::GetIntEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
+	native Float:SQL::GetFloatEntry(const table[], const field[], const column[] = "", columnID = -1, const columno[] = "=", connectionHandle = 1);
+	native Float:SQL::GetFloatEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
+	native SQL::GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, dest[], len = sizeof(dest), const columno[] = "=", connectionHandle = 1);
+	native SQL::GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", dest[], len = sizeof(dest), const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
+	native SQL::GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", dest[], len = sizeof(dest), const columno[] = "=", connectionHandle = 1);
+	native SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, dest[], len = sizeof(dest), const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
+	native SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", const columno[] = "=", connectionHandle = 1);
+	native SQL::GetIntEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
+	native Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", const columno[] = "=", connectionHandle = 1);
+	native Float:SQL::GetFloatEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, const columno[] = "=", const columno2[] = "=", connectionHandle = 1);
 	native SQL::CreateTable(const tablename[], connectionHandle = 1);
 	native SQL::AddTableEntry(handle, const field[], SQL::datatypes: type = SQL_TYPE_INT, maxlength = 11, bool:auto_increment = false, bool:setprimary = false);
 	native SQL::OpenTable_Read(const table[], const column[] = "", columnID = -1, connectionHandle = 1);
@@ -136,7 +136,7 @@
 #define SQL_MAX_TABLE_NAME 					(64)
 #define SQL_MAX_QUERY_LENGTH				(8192)
 #define SQL_INVALID_HANDLE					(-1)
-#define SQL_FORM_LENGTH						(128)
+#define SQL_FORM_LENGTH						(256)
 #define SQL:: 	SQL_T
 #define SQL_Warning(%0)      				(printf("[MYSQL] - WARNING: " %0))
 #define SQL_Error(%0)        				(printf("[MYSQL] - ERROR: " %0))
@@ -161,9 +161,8 @@ static stock
 	SQL::upd_pos[SQL_MAX_HANDLES],
 	Cache:SQL::ReadCache[SQL_MAX_HANDLES],
 	bool:SQL::upd_useautoincrement[SQL_MAX_HANDLES],
-	SQL::primarykey[SQL_MAX_HANDLES][64],
+    SQL::primarykey[SQL_MAX_HANDLES][64],
 	SQL::isset_primarykey[SQL_MAX_HANDLES]
-
 ;
 
 #define SQL_GetCallback(%0,%1) if(GetCallback(%0) == 1) if(cache_num_rows()) for(new %1 = 1; %1 < cache_num_rows()+1; %1++)
@@ -223,16 +222,15 @@ stock SQL::Commit(connectionHandle = 1)
 
 stock SQL::DeleteRow(const table[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1)
 {
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "DELETE FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "DELETE FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -242,8 +240,7 @@ stock SQL::DeleteRow(const table[], const column[] = "", columnID = -1, limit = 
 
 stock SQL::DeleteRow2(const table[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
 {
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "DELETE FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "DELETE FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -256,12 +253,12 @@ stock SQL::DeleteRow2(const table[], const column[] = "", columnID = -1, const c
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -420,8 +417,7 @@ stock SQL::OpenTable_MultiRead(const table[], const column[] = "", columnID = -1
 	}
 	SQL::upd_type[i] = SQL::CALLBACK;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(!isnull(desc))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " ORDER BY `%s` DESC", desc);
@@ -429,12 +425,12 @@ stock SQL::OpenTable_MultiRead(const table[], const column[] = "", columnID = -1
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -470,8 +466,7 @@ stock SQL::OpenTable_MultiRead2(const table[], const column[] = "", columnID = -
 	}
 	SQL::upd_type[i] = SQL::CALLBACK;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -489,12 +484,12 @@ stock SQL::OpenTable_MultiRead2(const table[], const column[] = "", columnID = -
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -530,8 +525,7 @@ stock SQL::OpenTable_MultiReadEx(const table[], const column[] = "", const colum
 	}
 	SQL::upd_type[i] = SQL::CALLBACK;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
 	if(!isnull(desc))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " ORDER BY `%s` DESC", desc);
@@ -539,12 +533,12 @@ stock SQL::OpenTable_MultiReadEx(const table[], const column[] = "", const colum
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -580,8 +574,7 @@ stock SQL::OpenTable_MultiReadEx2(const table[], const column[] = "", const colu
 	}
 	SQL::upd_type[i] = SQL::CALLBACK;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID2);
@@ -599,12 +592,12 @@ stock SQL::OpenTable_MultiReadEx2(const table[], const column[] = "", const colu
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -662,16 +655,15 @@ stock SQL::ToggleAutoIncrement(handle, bool:toggle)
 
 stock SQL::DeleteRowEx(const table[], const column[] = "", const columnID[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
 {
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "DELETE FROM `%s` WHERE `%s`='%e'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "DELETE FROM `%s` WHERE `%s`='%e'", table, column, columnID);
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -681,8 +673,7 @@ stock SQL::DeleteRowEx(const table[], const column[] = "", const columnID[] = ""
 
 stock SQL::DeleteRowEx2(const table[], const column[] = "", const columnID[] = "", const column2[] = "", const columnID2[] = "", columnID3 = -1, limit = -1, limit2 = -1, connectionHandle = 1)
 {
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "DELETE FROM `%s` WHERE `%s`='%e'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "DELETE FROM `%s` WHERE `%s`='%e'", table, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, columnID2);
@@ -695,12 +686,12 @@ stock SQL::DeleteRowEx2(const table[], const column[] = "", const columnID[] = "
 	}
 	if(limit != -1 && limit2 != -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d, %d", limit, limit2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(limit != -1 && limit2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT %d", limit);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -708,22 +699,10 @@ stock SQL::DeleteRowEx2(const table[], const column[] = "", const columnID[] = "
 	return 1;
 }
 
-stock SQL::GetIntEntry(const table[], const field[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetIntEntry(const table[], const field[], const column[] = "", columnID = -1, const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result, int = 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d' ", field, table, column, columno, columnID);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	if (result)
 	{
@@ -733,29 +712,18 @@ stock SQL::GetIntEntry(const table[], const field[], const column[] = "", column
 	return int;
 }
 
-stock SQL::GetIntEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetIntEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result, int = 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d'", field, table, column, columno, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, columnID2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(!isnull(column2) && !isnull(columnID3) && columnID2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%s'", column2, columno2, columnID3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -768,22 +736,44 @@ stock SQL::GetIntEntry2(const table[], const field[], const column[] = "", colum
 	return int;
 }
 
-stock Float:SQL::GetFloatEntry(const table[], const field[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1)
+stock Float:SQL::GetFloatEntry(const table[], const field[], const column[] = "", columnID = -1, const columno[] = "=", connectionHandle = 1)
 {
 	new
 		Cache:result,
 		Float:int
 	;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d' ", field, table, column, columno, columnID);
+	result = mysql_query(connectionHandle, SQL::upd_form);
+	if (result)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		if (cache_get_row_count())
+		{
+			int = cache_get_field_content_float(0, field, connectionHandle);
+		}
+		else
+		{
+			int = 0.0;
+		}
+		cache_delete(result);
+	}
+	return int;
+}
+
+stock Float:SQL::GetFloatEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
+{
+	new
+		Cache:result,
+		Float:int
+	;
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d'", field, table, column, columno, columnID);
+	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
+	{
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, columnID2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
-	if(limit != -1 && limit2 == -1)
+	if(!isnull(column2) && !isnull(columnID3) && columnID2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%s'", column2, columno2, columnID3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -803,67 +793,10 @@ stock Float:SQL::GetFloatEntry(const table[], const field[], const column[] = ""
 	return int;
 }
 
-stock Float:SQL::GetFloatEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
-{
-	new
-		Cache:result,
-		Float:int
-	;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(!isnull(column2) && !isnull(columnID3) && columnID2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
-	result = mysql_query(connectionHandle, SQL::upd_form);
-	if (result)
-	{
-		if (cache_get_row_count())
-		{
-			int = cache_get_field_content_float(0, field, connectionHandle);
-		}
-		else
-		{
-			int = 0.0;
-		}
-		cache_delete(result);
-	}
-	return int;
-}
-
-stock SQL::t_GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::t_GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d' ", field, table, column, columno, columnID);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	SQL::upd_form[0] = EOS;
 	if (result)
@@ -882,22 +815,10 @@ stock SQL::t_GetStringEntry(const table[], const field[], const column[] = "", c
 	return SQL::upd_form;
 }
 
-stock SQL::t_GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::t_GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d' ", field, table, column, columno, columnID);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	SQL::upd_form[0] = EOS;
 	if (result)
@@ -916,22 +837,10 @@ stock SQL::t_GetStringEntry2(const table[], const field[], const column[] = "", 
 	return SQL::upd_form;
 }
 
-stock SQL::GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetStringEntry(const table[], const field[], const column[] = "", columnID = -1, dest[], len = sizeof(dest), const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d' ", field, table, column, columno, columnID);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	if (result)
 	{
@@ -950,29 +859,18 @@ stock SQL::GetStringEntry(const table[], const field[], const column[] = "", col
 	return 1;
 }
 
-stock SQL::GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetStringEntry2(const table[], const field[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", dest[], len = sizeof(dest), const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%d'", field, table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%d'", field, table, column, columno, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, columnID2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(!isnull(column2) && !isnull(columnID3) && columnID2 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%s'", column2, columno2, columnID3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -994,22 +892,10 @@ stock SQL::GetStringEntry2(const table[], const field[], const column[] = "", co
 	return 1;
 }
 
-stock SQL::GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", dest[], len = sizeof(dest), const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e' ", field, table, column, columno, scolumn);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	if (result)
 	{
@@ -1028,29 +914,18 @@ stock SQL::GetStringEntryEx(const table[], const field[], const column[] = "", c
 	return 1;
 }
 
-stock SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, dest[], len = sizeof(dest), limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, dest[], len = sizeof(dest), const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e'", field, table, column, columno, scolumn);
 	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, scolumn2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%e'", column2, columno2, scolumn2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, scolumn3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, scolumn3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -1072,19 +947,40 @@ stock SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", 
 	return 1;
 }
 
-stock SQL::t_GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::t_GetStringEntryEx(const table[], const field[], const column[] = "", const scolumn[] = "", const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e' ", field, table, column, columno, scolumn);
+	result = mysql_query(connectionHandle, SQL::upd_form);
+	SQL::upd_form[0] = EOS;
+	if (result)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		if (cache_get_row_count() == 1)
+		{
+			cache_get_field_content(0, field, SQL::upd_form, connectionHandle, sizeof(SQL::upd_form));
+			cache_delete(result);
+		}
+		else
+		{
+			cache_delete(result);
+			return SQL::upd_form,;
+		}
+	}
+	return SQL::upd_form,;
+}
+
+stock SQL::t_GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
+{
+	new Cache:result;
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e'", field, table, column, columno, scolumn);
+	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
+	{
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%e'", column2, columno2, scolumn2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
-	if(limit != -1 && limit2 == -1)
+	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, scolumn3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -1106,63 +1002,38 @@ stock SQL::t_GetStringEntryEx(const table[], const field[], const column[] = "",
 	return SQL::upd_form,;
 }
 
-stock SQL::t_GetStringEntryEx2(const table[], const field[], const column[] = "", const scolumn[] = "", const column2[] = "", const scolumn2[] = "", scolumn3 = -1, limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", const columno[] = "=", connectionHandle = 1)
 {
-	new Cache:result;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, scolumn2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, scolumn3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	new Cache:result, int;
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e' ", field, table, column, columno, scolumn);
 	result = mysql_query(connectionHandle, SQL::upd_form);
-	SQL::upd_form[0] = EOS;
 	if (result)
 	{
 		if (cache_get_row_count() == 1)
 		{
-			cache_get_field_content(0, field, SQL::upd_form, connectionHandle, sizeof(SQL::upd_form));
-			cache_delete(result);
+			int = cache_get_field_content_int(0, field, connectionHandle);
 		}
 		else
 		{
-			cache_delete(result);
-			return SQL::upd_form,;
+			int = -1;
 		}
+		cache_delete(result);
 	}
-	return SQL::upd_form,;
+	return int;
 }
 
-stock SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
+stock SQL::GetIntEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result, int;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e'", field, table, column, columno, scolumn);
+	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%e'", column2, columno2, scolumn2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
-	if(limit != -1 && limit2 == -1)
+	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, scolumn3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -1182,64 +1053,10 @@ stock SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scol
 	return int;
 }
 
-stock SQL::GetIntEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, limit = -1, limit2 = -1, connectionHandle = 1)
-{
-	new Cache:result, int;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, scolumn2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, scolumn3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
-	result = mysql_query(connectionHandle, SQL::upd_form);
-	if (result)
-	{
-		if (cache_get_row_count() == 1)
-		{
-			int = cache_get_field_content_int(0, field, connectionHandle);
-		}
-		else
-		{
-			int = -1;
-		}
-		cache_delete(result);
-	}
-	return int;
-}
-
-stock Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", limit = -1, limit2 = -1, connectionHandle = 1)
+stock Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = "", scolumn[] = "", const columno[] = "=", connectionHandle = 1)
 {
 	new Cache:result, Float:int;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	strcat(SQL::upd_form, " ");
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e' ", field, table, column, columno, scolumn);
 	result = mysql_query(connectionHandle, SQL::upd_form);
 	if (result)
 	{
@@ -1256,29 +1073,18 @@ stock Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = 
 	return int;
 }
 
-stock Float:SQL::GetFloatEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, limit = -1, limit2 = -1, connectionHandle = 1)
+stock Float:SQL::GetFloatEntryEx2(const table[], const field[], const column[] = "", scolumn[] = "", const column2[] = "", scolumn2[] = "", scolumn3 = -1, const columno[] = "=", const columno2[] = "=", connectionHandle = 1)
 {
 	new Cache:result, Float:int;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT `%s` FROM `%s` WHERE `%s`='%e'", field, table, column, scolumn);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "SELECT `%s` FROM `%s` WHERE `%s`%s'%e'", field, table, column, columno, scolumn);
 	if(!isnull(column2) && !isnull(scolumn2) && scolumn3 == -1)
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, scolumn2);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%e'", column2, columno2, scolumn2);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	if(!isnull(column2) && scolumn3 != -1 && isnull(scolumn2))
 	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, scolumn3);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 != -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d', '%d'", limit, limit2);
-		strcat(SQL::upd_form, SQL::upd_form2);
-	}
-	if(limit != -1 && limit2 == -1)
-	{
-		format(SQL::upd_form2, sizeof(SQL::upd_form2), " LIMIT '%d'", limit);
+		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`%s'%d'", column2, columno2, scolumn3);
 		strcat(SQL::upd_form, SQL::upd_form2);
 	}
 	strcat(SQL::upd_form, " ");
@@ -1490,8 +1296,7 @@ stock SQL::OpenTable_Read2(const table[], const column[] = "", columnID = -1, co
 	}
 	SQL::upd_type[i] = SQL::READ;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -1583,8 +1388,7 @@ stock SQL::OpenTable_ReadEx2(const table[], const column[] = "", const columnID[
 	}
 	SQL::upd_type[i] = SQL::READ;
 	SQL::upd_connectionHandle[i] = connectionHandle;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "SELECT * FROM `%s` WHERE `%s`='%s'", table, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID2);
@@ -1798,8 +1602,7 @@ stock SQL::OpenTable_Update2(const table[], const column[] = "", columnID = -1, 
 	strcpy(SQL::upd_table[i], table);
 	SQL::upd_connectionHandle[i] = connectionHandle;
 	format(SQL::upd_query[i], SQL_MAX_QUERY_LENGTH, "UPDATE `%s` SET ", SQL::upd_table[i]);
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), " WHERE `%s`='%d'", column, columnID);
-	strcat(SQL::upd_rowidentifier[i], SQL::upd_form2);
+	format(SQL::upd_rowidentifier[i], SQL_FORM_LENGTH, " WHERE `%s`='%d'", column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -1883,8 +1686,7 @@ stock SQL::OpenTable_UpdateEx2(const table[], const column[] = "", const columnI
 	strcpy(SQL::upd_table[i], table);
 	SQL::upd_connectionHandle[i] = connectionHandle;
 	format(SQL::upd_query[i], SQL_MAX_QUERY_LENGTH, "UPDATE `%s` SET ", SQL::upd_table[i]);
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), " WHERE `%s`='%s'", column, columnID);
-	strcat(SQL::upd_rowidentifier[i], SQL::upd_form2);
+	format(SQL::upd_rowidentifier[i], SQL_FORM_LENGTH, " WHERE `%s`='%s'", column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%s'", column2, columnID2);
@@ -2164,8 +1966,7 @@ stock SQL::SetIntEntry2(const table[], const field[], value, const column[] = ""
 	}
 	if(!table[0]) return 0;
 	if(!field[0]) return 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%d' WHERE `%s`='%d'", table, field, value, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%d' WHERE `%s`='%d'", table, field, value, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -2204,8 +2005,7 @@ stock SQL::SetIntEntryEx2(const table[], const field[], value, const column[] = 
 	}
 	if(!table[0]) return 0;
 	if(!field[0]) return 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%d' WHERE `%s`='%e'", table, field, value, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%d' WHERE `%s`='%e'", table, field, value, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, columnID2);
@@ -2255,13 +2055,11 @@ stock SQL::SetStringEntry2(const table[], const field[], const value[], const co
 	if(use_real_escape == true)
 	{
 		//Not using mysql_real_escape_string as the %e specifier is faster.
- 		format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%d'", table, field, value, column, columnID);
-		strcat(SQL::upd_form, SQL::upd_form2);
+ 		mysql_format(connectionHandle, SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%d'", table, field, value, column, columnID);
 	}
 	else
 	{
- 		format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%d'", table, field, value, column, columnID);
-		strcat(SQL::upd_form, SQL::upd_form2);
+ 		format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%d'", table, field, value, column, columnID);
 	}
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
@@ -2312,13 +2110,11 @@ stock SQL::SetStringEntryEx2(const table[], const field[], const value[], const 
 	if(use_real_escape == true)
 	{
 		//Not using mysql_real_escape_string as the %e specifier is faster.
- 		format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%e'", table, field, value, column, columnID);
-		strcat(SQL::upd_form, SQL::upd_form2);
+ 		format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%e' WHERE `%s`='%e'", table, field, value, column, columnID);
 	}
 	else
 	{
-  		format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%s' WHERE `%s`='%e'", table, field, value, column, columnID);
-		strcat(SQL::upd_form, SQL::upd_form2);
+  		format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%s' WHERE `%s`='%e'", table, field, value, column, columnID);
 	}
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
@@ -2358,8 +2154,7 @@ stock SQL::SetFloatEntry2(const table[], const field[], Float:value, const colum
 	}
 	if(!table[0]) return 0;
 	if(!field[0]) return 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%f' WHERE `%s`='%d'", table, field, value, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%f' WHERE `%s`='%d'", table, field, value, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%d'", column2, columnID2);
@@ -2398,8 +2193,7 @@ stock SQL::SetFloatEntryEx2(const table[], const field[], Float:value, const col
 	}
 	if(!table[0]) return 0;
 	if(!field[0]) return 0;
-	format(SQL::upd_form2, sizeof(SQL::upd_form2), "UPDATE `%s` SET `%s`='%f' WHERE `%s`='%e'", table, field, value, column, columnID);
-	strcat(SQL::upd_form, SQL::upd_form2);
+	format(SQL::upd_form, sizeof(SQL::upd_form), "UPDATE `%s` SET `%s`='%f' WHERE `%s`='%e'", table, field, value, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(SQL::upd_form2, sizeof(SQL::upd_form2), " AND `%s`='%e'", column2, columnID2);
@@ -2564,8 +2358,7 @@ stock SQL::RowExistsEx(const table[], const column[] = "", const columnID[], con
 stock SQL::RowExistsEx2(const table[], const column[] = "", const columnID[], const column2[] = "", const columnID2[] = "", columnID3 = -1, connectionHandle = 1)
 {
 	new query[SQL_FORM_LENGTH], query2[SQL_FORM_LENGTH], Cache:result;
-	format(query2, sizeof(query2), "SELECT * FROM `%s` WHERE `%s`='%e'", table, column, columnID);
-	strcat(query, query2);
+	format(query, sizeof(query), "SELECT * FROM `%s` WHERE `%s`='%e'", table, column, columnID);
 	if(!isnull(column2) && !isnull(columnID2) && columnID3 == -1)
 	{
 		format(query2, sizeof(query2), " AND `%s`='%e'", column2, columnID2);
@@ -2612,8 +2405,7 @@ stock SQL::RowExists(const table[], const column[] = "", columnID = -1, connecti
 stock SQL::RowExists2(const table[], const column[] = "", columnID = -1, const column2[] = "", columnID2 = -1, const columnID3[] = "", connectionHandle = 1)
 {
 	new query[SQL_FORM_LENGTH], query2[SQL_FORM_LENGTH], Cache:result;
-	format(query2, sizeof(query2), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
-	strcat(query, query2);
+	format(query, sizeof(query), "SELECT * FROM `%s` WHERE `%s`='%d'", table, column, columnID);
 	if(!isnull(column2) && columnID2 != -1 && isnull(columnID3))
 	{
 		format(query2, sizeof(query2), " AND `%s`='%d'", column2, columnID2);
