@@ -36,11 +36,10 @@ In order to use this include, you require the [MySQL Plugin](https://github.com/
 #define mysql_user    "root" 
 #define mysql_db        "server" 
 #define mysql_pass         "" 
-new MySQL_Handle;
 
 public OnGameModeInit() 
 { 
-	MySQL_Handle = SQL::Connect(mysql_host, mysql_user, mysql_db, mysql_pass); 
+	SQL::Connect(mysql_host, mysql_user, mysql_pass, mysql_db); 
 	return 1;
 }
 ```
