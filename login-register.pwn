@@ -40,7 +40,7 @@ stock ret_pName(playerid)
 public OnGameModeInit() 
 { 
     //Connecting to the MySQL database 
-    SQL::Connect(mysql_host, mysql_user, mysql_db, mysql_pass); 
+    SQL::Connect(mysql_host, mysql_user, mysql_pass, mysql_db); 
     //Checking if the table 'players' exists 
      
     //Checking if the table 'players' exists 
