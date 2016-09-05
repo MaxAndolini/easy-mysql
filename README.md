@@ -26,7 +26,7 @@ In order to use this include, you require the [MySQL Plugin](https://github.com/
       Connects your script to a MySQL database with given parameters.
 ####Parameters:
 ```pawn
-(const host[], const user[], const database[], const password[], bool:debugging = false, port = 3306, bool:autoreconnect = true, pool_size = 2);´
+(const host[], const user[], const password[], const database[], bool:debugging = false, port = 3306, bool:autoreconnect = true, pool_size = 2);´
 ```
 ####Return values:
     Connection handle retrieved by mysql_connect.
