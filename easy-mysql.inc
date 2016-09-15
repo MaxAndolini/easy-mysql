@@ -8,7 +8,7 @@
 	Credits:
 	* BlueG - MySQL
 
-	Version: 3.2
+	Version: 3.3
 
 	(c) Copyright 2016
  	* This file is provided as is (no warranties).
@@ -680,7 +680,8 @@ stock SQL::GetIntEntry(const table[], const field[], const column[] = "", column
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count)) cache_get_value_name_int(0, field, int);
+	    cache_get_row_count(count);
+		if (count) cache_get_value_name_int(0, field, int);
 		cache_delete(result);
 	}
 	return int;
@@ -704,7 +705,8 @@ stock SQL::GetIntEntry2(const table[], const field[], const column[] = "", colum
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count)) cache_get_value_name_int(0, field, int);
+	    cache_get_row_count(count);
+		if (count) cache_get_value_name_int(0, field, int);
 		cache_delete(result);
 	}
 	return int;
@@ -721,7 +723,8 @@ stock Float:SQL::GetFloatEntry(const table[], const field[], const column[] = ""
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count))
+	    cache_get_row_count(count);
+		if (count)
 		{
 			cache_get_value_name_float(0, field, int);
 		}
@@ -756,7 +759,8 @@ stock Float:SQL::GetFloatEntry2(const table[], const field[], const column[] = "
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count))
+	    cache_get_row_count(count);
+		if (count)
 		{
 			cache_get_value_name_float(0, field, int);
 		}
@@ -777,7 +781,8 @@ stock SQL::t_GetStringEntry(const table[], const field[], const column[] = "", c
 	SQL::upd_form[0] = EOS;
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			cache_delete(result);
@@ -799,7 +804,8 @@ stock SQL::t_GetStringEntry2(const table[], const field[], const column[] = "", 
 	SQL::upd_form[0] = EOS;
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			cache_delete(result);
@@ -820,7 +826,8 @@ stock SQL::GetStringEntry(const table[], const field[], const column[] = "", col
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			strcpy(dest, SQL::upd_form, len);
@@ -853,7 +860,8 @@ stock SQL::GetStringEntry2(const table[], const field[], const column[] = "", co
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			strcpy(dest, SQL::upd_form, len);
@@ -875,7 +883,8 @@ stock SQL::GetStringEntryEx(const table[], const field[], const column[] = "", c
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			strcpy(dest, SQL::upd_form, len);
@@ -908,7 +917,8 @@ stock SQL::GetStringEntryEx2(const table[], const field[], const column[] = "", 
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			strcpy(dest, SQL::upd_form, len);
@@ -931,7 +941,8 @@ stock SQL::t_GetStringEntryEx(const table[], const field[], const column[] = "",
 	SQL::upd_form[0] = EOS;
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			cache_delete(result);
@@ -964,7 +975,8 @@ stock SQL::t_GetStringEntryEx2(const table[], const field[], const column[] = ""
 	SQL::upd_form[0] = EOS;
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name(0, field, SQL::upd_form, sizeof(SQL::upd_form));
 			cache_delete(result);
@@ -985,7 +997,8 @@ stock SQL::GetIntEntryEx(const table[], const field[], const column[] = "", scol
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name_int(0, field, int);
 		}
@@ -1016,7 +1029,8 @@ stock SQL::GetIntEntryEx2(const table[], const field[], const column[] = "", sco
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name_int(0, field, int);
 		}
@@ -1036,7 +1050,8 @@ stock Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = 
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name_int(0, field, int);
 		}
@@ -1067,7 +1082,8 @@ stock Float:SQL::GetFloatEntryEx2(const table[], const field[], const column[] =
 	result = mysql_query(SQL::mc, SQL::upd_form);
 	if (result)
 	{
-		if (cache_get_row_count(count) == 1)
+	    cache_get_row_count(count);
+		if (count == 1)
 		{
 			cache_get_value_name_int(0, field, int);
 		}
