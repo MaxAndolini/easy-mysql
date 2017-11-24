@@ -8,9 +8,9 @@
 	Credits:
 	* BlueG - MySQL
 
-	Version: 3.3
+	Version: 3.4
 
-	(c) Copyright 2016
+	(c) Copyright 2017
  	* This file is provided as is (no warranties).
 
 	native SQL::Connect(const host[], const user[], const password[], const database[], bool:debugging = false, port = 3306, bool:autoreconnect = true, pool_size = 2);
@@ -1053,7 +1053,7 @@ stock Float:SQL::GetFloatEntryEx(const table[], const field[], const column[] = 
 	    cache_get_row_count(count);
 		if (count == 1)
 		{
-			cache_get_value_name_int(0, field, int);
+			cache_get_value_name_float(0, field, int);
 		}
 		else
 		{
